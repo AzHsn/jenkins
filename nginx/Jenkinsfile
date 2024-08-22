@@ -7,8 +7,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh "docker login --username ${USERNAME} --password ${PASSWORD}"
-                        sh "docker build -t new-nginx:v2 -f nginx/nginx/dockerfile ./nginx/nginx/"
-                        sh "docker tag new-nginx:v2 azhn/nginx:v2"
+                        sh "docker build -t new-nginx:v3 -f nginx/nginx/dockerfile ./nginx/nginx/"
+                        sh "docker tag new-nginx:v3 azhn/nginx:v3"
                     }
                 }
             }
@@ -16,7 +16,7 @@ pipeline {
         stage('CI-PUsh') {
             steps {
                 script {
-                        sh "docker push azhn/nginx:v2"
+                        sh "docker push azhn/nginx:v3"
 
                     }
                 }
@@ -25,12 +25,9 @@ pipeline {
         stage('CD') {
             steps {
                 script {
-                    # withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                      #  sh "docker login --username ${USERNAME} --password ${PASSWORD}"
-                        sh "docker run -d -p 8065:80 --name nginx-test-con azhn/nginx:v2"
+                        sh "docker run -d -p 8065:80 --name nginx-test-con1 azhn/nginx:v3"
                     }
                 }
             }
-        }
     }
 }
